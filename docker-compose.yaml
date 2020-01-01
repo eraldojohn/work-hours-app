@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  api:
+    image: node:12
+    container_name: wh-api
+    command: /app/node_modules/.bin/nodemon index.js
+    working_dir: /app
+    volumes:
+      - ./api:/app
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+
+  frontend:
+    image: node:12
+    container_name: wh-front
+    command: npm start
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    ports:
+      - 80:80
+    depends_on:
+      - api
+
+  db:
+    image: mariadb:10
+    container_name: wh-db
+    volumes:
+      - ./db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
